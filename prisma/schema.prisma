@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Lead {
+  id        String    @id @default(cuid())
+  nome      String
+  email     String    @unique
+  whatsapp  String?
+  createdAt DateTime  @default(now())
+  calculos  Calculo[]
+}
+
+model Calculo {
+  id             String   @id @default(cuid())
+  leadId         String
+  lead           Lead     @relation(fields: [leadId], references: [id])
+  peso           Float
+  altura         Float
+  idade          Int
+  sexo           String
+  nivelAtividade String
+  objetivo       String
+  metodoTMB      String   @default("mifflin_st_jeor")
+  tmb            Float
+  imc            Float
+  caloriasTotais Float
+  proteinaG      Float
+  carboG         Float
+  gorduraG       Float
+  createdAt      DateTime @default(now())
+
+  @@index([leadId])
+}

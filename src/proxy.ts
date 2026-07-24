@@ -1,0 +1,17 @@
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { ADMIN_SESSION_COOKIE, isValidSessionToken } from "@/lib/auth";
+
+export function proxy(request: NextRequest) {
+  const token = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
+
+  if (!isValidSessionToken(token)) {
+    return NextResponse.redirect(new URL("/admin/login", request.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/admin/leads/:path*"],
+};
